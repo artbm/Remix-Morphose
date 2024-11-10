@@ -1,138 +1,277 @@
-import type { MetaFunction } from "@remix-run/node";
+// app/routes/_index.tsx
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import {
+  ArrowRight,
+  AudioLines,
+  Calendar,
+  Disc3,
+  Play,
+  Timer,
+} from "lucide-react";
+import { ArtistCard } from "~/components/ArtistCard";
+import { EventCard } from "~/components/EventCard";
+import { MainLayout } from "~/components/layout/MainLayout";
+import { ReleaseCard } from "~/components/ReleaseCard";
+import { Button } from "~/components/ui/button";
+import type { Artist } from "~/types";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
-};
+type ReleaseType = "EP" | "Album" | "Single";
 
-export default function Index() {
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex flex-col items-center gap-16">
-        <header className="flex flex-col items-center gap-9">
-          <h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Welcome to <span className="sr-only">Remix</span>
-          </h1>
-          <div className="h-[144px] w-[434px]">
-            <img
-              src="/logo-light.png"
-              alt="Remix"
-              className="block w-full dark:hidden"
-            />
-            <img
-              src="/logo-dark.png"
-              alt="Remix"
-              className="hidden w-full dark:block"
-            />
-          </div>
-        </header>
-        <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
-          <p className="leading-6 text-gray-700 dark:text-gray-200">
-            What&apos;s next?
-          </p>
-          <ul>
-            {resources.map(({ href, text, icon }) => (
-              <li key={href}>
-                <a
-                  className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {icon}
-                  {text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-    </div>
-  );
+interface Release {
+  id: string;
+  slug: string;
+  title: string;
+  cover: string;
+  artist: {
+    id: string;
+    name: string;
+    slug: string;
+    image: string;
+    genres: string[];
+    totalReleases: number;
+    monthlyListeners: string;
+  };
+  releaseDate: string;
+  type: ReleaseType; // This ensures type is one of the three allowed values
+  genre: string;
 }
 
-const resources = [
-  {
-    href: "https://remix.run/start/quickstart",
-    text: "Quick Start (5 min)",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        className="stroke-gray-600 group-hover:stroke-current dark:stroke-gray-300"
-      >
-        <path
-          d="M8.51851 12.0741L7.92592 18L15.6296 9.7037L11.4815 7.33333L12.0741 2L4.37036 10.2963L8.51851 12.0741Z"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "https://remix.run/start/tutorial",
-    text: "Tutorial (30 min)",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        className="stroke-gray-600 group-hover:stroke-current dark:stroke-gray-300"
-      >
-        <path
-          d="M4.561 12.749L3.15503 14.1549M3.00811 8.99944H1.01978M3.15503 3.84489L4.561 5.2508M8.3107 1.70923L8.3107 3.69749M13.4655 3.84489L12.0595 5.2508M18.1868 17.0974L16.635 18.6491C16.4636 18.8205 16.1858 18.8205 16.0144 18.6491L13.568 16.2028C13.383 16.0178 13.0784 16.0347 12.915 16.239L11.2697 18.2956C11.047 18.5739 10.6029 18.4847 10.505 18.142L7.85215 8.85711C7.75756 8.52603 8.06365 8.21994 8.39472 8.31453L17.6796 10.9673C18.0223 11.0653 18.1115 11.5094 17.8332 11.7321L15.7766 13.3773C15.5723 13.5408 15.5554 13.8454 15.7404 14.0304L18.1868 16.4767C18.3582 16.6481 18.3582 16.926 18.1868 17.0974Z"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "https://remix.run/docs",
-    text: "Remix Docs",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        className="stroke-gray-600 group-hover:stroke-current dark:stroke-gray-300"
-      >
-        <path
-          d="M9.99981 10.0751V9.99992M17.4688 17.4688C15.889 19.0485 11.2645 16.9853 7.13958 12.8604C3.01467 8.73546 0.951405 4.11091 2.53116 2.53116C4.11091 0.951405 8.73546 3.01467 12.8604 7.13958C16.9853 11.2645 19.0485 15.889 17.4688 17.4688ZM2.53132 17.4688C0.951566 15.8891 3.01483 11.2645 7.13974 7.13963C11.2647 3.01471 15.8892 0.951453 17.469 2.53121C19.0487 4.11096 16.9854 8.73551 12.8605 12.8604C8.73562 16.9853 4.11107 19.0486 2.53132 17.4688Z"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "https://rmx.as/discord",
-    text: "Join Discord",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="20"
-        viewBox="0 0 24 20"
-        fill="none"
-        className="stroke-gray-600 group-hover:stroke-current dark:stroke-gray-300"
-      >
-        <path
-          d="M15.0686 1.25995L14.5477 1.17423L14.2913 1.63578C14.1754 1.84439 14.0545 2.08275 13.9422 2.31963C12.6461 2.16488 11.3406 2.16505 10.0445 2.32014C9.92822 2.08178 9.80478 1.84975 9.67412 1.62413L9.41449 1.17584L8.90333 1.25995C7.33547 1.51794 5.80717 1.99419 4.37748 2.66939L4.19 2.75793L4.07461 2.93019C1.23864 7.16437 0.46302 11.3053 0.838165 15.3924L0.868838 15.7266L1.13844 15.9264C2.81818 17.1714 4.68053 18.1233 6.68582 18.719L7.18892 18.8684L7.50166 18.4469C7.96179 17.8268 8.36504 17.1824 8.709 16.4944L8.71099 16.4904C10.8645 17.0471 13.128 17.0485 15.2821 16.4947C15.6261 17.1826 16.0293 17.8269 16.4892 18.4469L16.805 18.8725L17.3116 18.717C19.3056 18.105 21.1876 17.1751 22.8559 15.9238L23.1224 15.724L23.1528 15.3923C23.5873 10.6524 22.3579 6.53306 19.8947 2.90714L19.7759 2.73227L19.5833 2.64518C18.1437 1.99439 16.6386 1.51826 15.0686 1.25995ZM16.6074 10.7755L16.6074 10.7756C16.5934 11.6409 16.0212 12.1444 15.4783 12.1444C14.9297 12.1444 14.3493 11.6173 14.3493 10.7877C14.3493 9.94885 14.9378 9.41192 15.4783 9.41192C16.0471 9.41192 16.6209 9.93851 16.6074 10.7755ZM8.49373 12.1444C7.94513 12.1444 7.36471 11.6173 7.36471 10.7877C7.36471 9.94885 7.95323 9.41192 8.49373 9.41192C9.06038 9.41192 9.63892 9.93712 9.6417 10.7815C9.62517 11.6239 9.05462 12.1444 8.49373 12.1444Z"
-          strokeWidth="1.5"
-        />
-      </svg>
-    ),
-  },
-];
+interface Event {
+  id: string;
+  title: string;
+  date: string;
+  venue: string;
+  city: string;
+  artists: Artist[];
+  image: string;
+  slug: string;
+  location: string;
+}
+
+export async function loader() {
+  return json({
+    featuredReleases: [
+      {
+        id: "1",
+        slug: "digital-pulse",
+        title: "Digital Pulse EP",
+        cover: "/api/placeholder/400/400",
+        artist: {
+          id: "1",
+          name: "Binary Beats",
+          slug: "binary-beats",
+          image: "/api/placeholder/200/200",
+          genres: ["Techno"],
+          totalReleases: 5,
+          monthlyListeners: "10000",
+        },
+        releaseDate: "2024",
+        type: "EP",
+        genre: "Techno",
+      },
+    ],
+    featuredArtists: [
+      {
+        id: "1",
+        name: "Binary Beats",
+        slug: "binary-beats",
+        image: "/api/placeholder/200/200",
+        genres: ["Techno"],
+        totalReleases: 5,
+        monthlyListeners: 10000,
+      },
+    ],
+    upcomingEvents: [
+      {
+        id: "1",
+        title: "Techno Night",
+        date: "2024-03-15",
+        venue: "Club XYZ",
+        city: "Berlin",
+        artists: [
+          {
+            id: "1",
+            name: "Binary Beats",
+            slug: "binary-beats",
+            image: "/api/placeholder/200/200",
+            genres: ["Techno"],
+            totalReleases: 5,
+            monthlyListeners: 10000,
+          },
+        ],
+        image: "/api/placeholder/800/400",
+        slug: "techno-night",
+        location: "Berlin, Germany",
+      },
+    ],
+  });
+}
+
+export default function Index() {
+  const { featuredReleases, featuredArtists, upcomingEvents } =
+    useLoaderData<typeof loader>();
+
+  return (
+    <MainLayout>
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-blue-950">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent animate-pulse" />
+          <div className="absolute inset-0 bg-grid-white/[0.02]" />
+        </div>
+
+        {/* Foreground Content */}
+        <div className="relative z-10 container mx-auto px-4 py-24 text-center">
+          <div className="inline-block mb-6 animate-pulse">
+            <AudioLines className="w-16 h-16 text-blue-500" />
+          </div>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
+            The Future of
+            <br />
+            <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
+              Electronic Music
+            </span>
+          </h1>
+          <p className="text-lg md:text-xl text-blue-200 mb-8 max-w-2xl mx-auto">
+            Pushing boundaries in techno, house, and electronic music. Join us
+            in shaping the sound of tomorrow.
+          </p>
+          <div className="flex flex-col md:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              <Play className="w-5 h-5 mr-2" /> Listen Now
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-blue-500 text-blue-200"
+            >
+              Explore Artists
+            </Button>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 max-w-4xl mx-auto">
+            {[
+              { icon: Disc3, label: "Releases", value: "100+" },
+              { icon: Timer, label: "Hours of Music", value: "1000+" },
+              { icon: Calendar, label: "Events", value: "50+" },
+              { icon: AudioLines, label: "Artists", value: "25+" },
+            ].map(({ icon: Icon, label, value }) => (
+              <div key={label} className="text-center">
+                <Icon className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white mb-1">
+                  {value}
+                </div>
+                <div className="text-sm text-blue-200">{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <ArrowRight className="w-6 h-6 text-blue-500 rotate-90" />
+        </div>
+      </section>
+
+      {/* Latest Releases */}
+      <section className="py-20 bg-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-white/[0.02]" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex justify-between items-center mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-white mb-2">
+                Latest Releases
+              </h2>
+              <p className="text-blue-200">
+                Fresh tracks from our roster of artists
+              </p>
+            </div>
+            <Button variant="ghost" className="text-blue-200">
+              View All <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredReleases.map((release) => (
+              <ReleaseCard key={release.id} release={release} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Artists */}
+      <section className="py-20 bg-gradient-to-b from-black to-gray-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white mb-2">
+              Featured Artists
+            </h2>
+            <p className="text-blue-200">
+              Meet the innovators shaping our sound
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredArtists.map(
+              (artist) =>
+                artist && <ArtistCard key={artist.id} artist={artist} />
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Events */}
+      <section className="py-20 bg-gray-950 relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-white mb-2">
+                Upcoming Events
+              </h2>
+              <p className="text-blue-200">Experience the music live</p>
+            </div>
+            <Button variant="ghost" className="text-blue-200">
+              All Events <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+          <div className="space-y-4">
+            {upcomingEvents.map(
+              (event) => event && <EventCard key={event.id} event={event} />
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="py-20 bg-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Stay Connected
+            </h2>
+            <p className="text-blue-200 mb-8">
+              Subscribe to our newsletter for exclusive updates, releases, and
+              event announcements.
+            </p>
+            <form className="flex gap-4 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              />
+              <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                Subscribe
+              </Button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </MainLayout>
+  );
+}
