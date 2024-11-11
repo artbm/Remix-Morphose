@@ -22,7 +22,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
         className="w-full max-w-md bg-gray-950 border-gray-800 p-0"
       >
         <SheetHeader className="p-6 border-b border-gray-800">
-          <SheetTitle className="text-white">FUTURE PULSE</SheetTitle>
+          <SheetTitle className="text-white">Morphose</SheetTitle>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-8rem)]">
           <div className="flex flex-col p-6">

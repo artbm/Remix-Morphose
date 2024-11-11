@@ -9,12 +9,15 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-sm border-b border-gray-800">
+    <header className="fixed top-0 left-0 right-0 z-[100] bg-black/80 backdrop-blur-lg border-b border-gray-800 shadow-lg">
       <div className="container mx-auto px-4 h-16">
         <div className="flex items-center justify-between h-full">
           {/* Logo */}
-          <Link to="/" className="text-xl font-bold text-white">
-            FUTURE PULSE
+          <Link
+            to="/"
+            className="text-xl font-bold text-white relative z-[101]"
+          >
+            Morphose
           </Link>
 
           {/* Desktop Navigation */}
@@ -37,7 +40,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden text-white"
+            className="md:hidden text-white relative z-[101]"
             onClick={onMenuClick}
           >
             <Menu className="w-5 h-5" />

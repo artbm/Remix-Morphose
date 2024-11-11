@@ -70,6 +70,42 @@ export async function loader() {
         type: "EP",
         genre: "Techno",
       },
+      {
+        id: "2",
+        slug: "neural-networks",
+        title: "Neural Networks",
+        cover: "/api/placeholder/400/400",
+        artist: {
+          id: "2",
+          name: "Synthesis",
+          slug: "synthesis",
+          image: "/api/placeholder/200/200",
+          genres: ["House", "Progressive"],
+          totalReleases: 3,
+          monthlyListeners: "15000",
+        },
+        releaseDate: "2024",
+        type: "Album",
+        genre: "House",
+      },
+      {
+        id: "3",
+        slug: "midnight-protocol",
+        title: "Midnight Protocol",
+        cover: "/api/placeholder/400/400",
+        artist: {
+          id: "3",
+          name: "Data Flow",
+          slug: "data-flow",
+          image: "/api/placeholder/200/200",
+          genres: ["Deep House", "Melodic Techno"],
+          totalReleases: 8,
+          monthlyListeners: "25000",
+        },
+        releaseDate: "2024",
+        type: "Single",
+        genre: "Melodic Techno",
+      },
     ],
     featuredArtists: [
       {
@@ -79,7 +115,25 @@ export async function loader() {
         image: "/api/placeholder/200/200",
         genres: ["Techno"],
         totalReleases: 5,
-        monthlyListeners: 10000,
+        monthlyListeners: "10000",
+      },
+      {
+        id: "2",
+        name: "Synthesis",
+        slug: "synthesis",
+        image: "/api/placeholder/200/200",
+        genres: ["House", "Progressive"],
+        totalReleases: 3,
+        monthlyListeners: "15000",
+      },
+      {
+        id: "3",
+        name: "Data Flow",
+        slug: "data-flow",
+        image: "/api/placeholder/200/200",
+        genres: ["Deep House", "Melodic Techno"],
+        totalReleases: 8,
+        monthlyListeners: "25000",
       },
     ],
     upcomingEvents: [
@@ -97,12 +151,63 @@ export async function loader() {
             image: "/api/placeholder/200/200",
             genres: ["Techno"],
             totalReleases: 5,
-            monthlyListeners: 10000,
+            monthlyListeners: "10000",
           },
         ],
         image: "/api/placeholder/800/400",
         slug: "techno-night",
         location: "Berlin, Germany",
+      },
+      {
+        id: "2",
+        title: "Progressive House Festival",
+        date: "2024-04-20",
+        venue: "Warehouse 23",
+        city: "Amsterdam",
+        artists: [
+          {
+            id: "2",
+            name: "Synthesis",
+            slug: "synthesis",
+            image: "/api/placeholder/200/200",
+            genres: ["House", "Progressive"],
+            totalReleases: 3,
+            monthlyListeners: "15000",
+          },
+          {
+            id: "3",
+            name: "Data Flow",
+            slug: "data-flow",
+            image: "/api/placeholder/200/200",
+            genres: ["Deep House", "Melodic Techno"],
+            totalReleases: 8,
+            monthlyListeners: "25000",
+          },
+        ],
+        image: "/api/placeholder/800/400",
+        slug: "progressive-house-festival",
+        location: "Amsterdam, Netherlands",
+      },
+      {
+        id: "3",
+        title: "Deep Electronic Sessions",
+        date: "2024-05-10",
+        venue: "The Underground",
+        city: "London",
+        artists: [
+          {
+            id: "3",
+            name: "Data Flow",
+            slug: "data-flow",
+            image: "/api/placeholder/200/200",
+            genres: ["Deep House", "Melodic Techno"],
+            totalReleases: 8,
+            monthlyListeners: "25000",
+          },
+        ],
+        image: "/api/placeholder/800/400",
+        slug: "deep-electronic-sessions",
+        location: "London, UK",
       },
     ],
   });
@@ -181,22 +286,27 @@ export default function Index() {
 
       {/* Latest Releases */}
       <section className="py-20 bg-black relative overflow-hidden">
+        {/* Animated Background Layers */}
         <div className="absolute inset-0 bg-grid-white/[0.02]" />
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/5 via-transparent to-transparent animate-pulse" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-400/10 via-transparent to-transparent animate-float" />
+          <div className="absolute inset-0 bg-[conic-gradient(from_90deg_at_50%_50%,_var(--tw-gradient-stops))] from-blue-600/5 via-transparent to-transparent animate-spin-slow" />
+        </div>
+
+        {/* Content */}
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex justify-between items-center mb-12">
-            <div>
-              <h2 className="text-3xl font-bold text-white mb-2">
-                Latest Releases
-              </h2>
-              <p className="text-blue-200">
-                Fresh tracks from our roster of artists
-              </p>
+            <div className="flex items-center gap-4">
+              <Disc3 className="w-8 h-8 text-blue-500" />
+              <h2 className="text-3xl font-bold">Latest Releases</h2>
             </div>
-            <Button variant="ghost" className="text-blue-200">
-              View All <ArrowRight className="w-4 h-4 ml-2" />
+            <Button variant="ghost" className="group">
+              View All
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredReleases.map((release) => (
               <ReleaseCard key={release.id} release={release} />
             ))}
@@ -275,3 +385,37 @@ export default function Index() {
     </MainLayout>
   );
 }
+
+{
+  /* Add these animations to your global CSS or tailwind config */
+}
+<style jsx global>{`
+  @keyframes float {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
+`}</style>;
